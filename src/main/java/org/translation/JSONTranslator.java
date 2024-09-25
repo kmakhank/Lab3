@@ -15,11 +15,12 @@ import org.json.JSONArray;
  */
 public class JSONTranslator implements Translator {
 
-    // TODO Task: pick appropriate instance variables for this class
-
+    private final JSONArray translations;
+    private String alpha3 = "alpha3";
     /**
      * Constructs a JSONTranslator using data from the sample.json resources file.
      */
+
     public JSONTranslator() {
         this("sample.json");
     }
@@ -37,8 +38,7 @@ public class JSONTranslator implements Translator {
 
             JSONArray jsonArray = new JSONArray(jsonString);
 
-            // TODO Task: use the data in the jsonArray to populate your instance variables
-            //            Note: this will likely be one of the most substantial pieces of code you write in this lab.
+            translations = jsonArray;
 
         }
         catch (IOException | URISyntaxException ex) {
@@ -48,21 +48,40 @@ public class JSONTranslator implements Translator {
 
     @Override
     public List<String> getCountryLanguages(String country) {
-        // TODO Task: return an appropriate list of language codes,
-        //            but make sure there is no aliasing to a mutable object
-        return new ArrayList<>();
+        List<String> languages = new ArrayList<>();
+        for (int i = 0; i < translations.length(); i++) {
+            String tmp = translations.getJSONObject(i).getString(alpha3);
+            if (tmp.equals(country)) {
+                for (int j = 0; i < translations.getJSONObject(i).names().length(); j++) {
+                    String key = translations.getJSONObject(i).names().getString(j);
+                    if (!("alpha2".equals(key) || alpha3.equals(key) || "id".equals(key))) {
+                        languages.add(translations.getJSONObject(i).names().getString(j));
+                    }
+                }
+            }
+        }
+
+        return languages;
     }
 
     @Override
     public List<String> getCountries() {
-        // TODO Task: return an appropriate list of country codes,
-        //            but make sure there is no aliasing to a mutable object
-        return new ArrayList<>();
+        List<String> countries = new ArrayList<>();
+        for (int i = 0; i < translations.length(); i++) {
+            countries.add(translations.getJSONObject(i).getString(alpha3));
+        }
+        return countries;
     }
 
     @Override
     public String translate(String country, String language) {
-        // TODO Task: complete this method using your instance variables as needed
+        for (int i = 0; i < translations.length(); i++) {
+            String tmp = translations.getJSONObject(i).getString(alpha3);
+            if (tmp.equals(country) && translations.getJSONObject(i).has(language)) {
+                return translations.getJSONObject(i).getString(language);
+            }
+        }
+        // NO answer found
         return null;
     }
 }

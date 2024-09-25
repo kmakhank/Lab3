@@ -26,7 +26,6 @@ public class LanguageCodeConverter {
 
     /**
      * Overloaded constructor which allows us to specify the filename to load the language code data from.
-     *
      * @param filename the name of the file in the resources folder to load the data from
      * @throws RuntimeException if the resource file can't be loaded properly
      */
